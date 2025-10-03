@@ -1,0 +1,7 @@
+CREATE TABLE objects (
+    id SERIAL PRIMARY KEY,
+    d TIMESTAMP NOT NULL,
+    t TEXT NOT NULL,
+    p REAL NOT NULL,
+    s REAL NOT NULL
+)
