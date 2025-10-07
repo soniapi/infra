@@ -1,6 +1,8 @@
 use calamine::DataType;
 use std::any::type_name;
 use std::io::{self, Write};
+use std::error::Error;
+use std::fmt;
 
 pub fn convert(data: &DataType) -> Option<f32> {
     match data {
@@ -34,3 +36,16 @@ pub fn inputs() -> (String, String) {
     (trimmed_f, trimmed_t)
 }
 
+
+pub fn errors() -> Result<(), Box<dyn Error>> {
+    let message = "Error";
+    #[derive(Debug)]
+    struct BaseError(String); 
+    impl fmt::Display for BaseError {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                write!(f, "{}", self.0)
+        }
+    }
+    impl Error for BaseError {}
+    Err(Box::new(BaseError(message.to_string())))
+}

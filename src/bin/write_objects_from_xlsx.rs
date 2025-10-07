@@ -12,7 +12,7 @@ fn main() {
         for row in range.rows().skip(1).take(10) {
             println!("Check your PostgreSQL table for below object insertion");
             println!("row[0]={:?}, row[1]={:?}, row[2]={:?}, row[3]={:?}", row[0].as_datetime(), row[1].as_string(), &helpers::convert(&row[2]).as_ref().unwrap(), &helpers::convert(&row[3]).as_ref().unwrap());
-            create_object(connection, row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), helpers::convert(&row[2]).as_ref().unwrap(), helpers::convert(&row[3]).as_ref().unwrap());
+            let _ = create_object(connection,  None, row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), helpers::convert(&row[2]).as_ref().unwrap(), helpers::convert(&row[3]).as_ref().unwrap());
         }
     }
     else {
