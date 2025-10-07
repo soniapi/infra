@@ -1,0 +1,8 @@
+CREATE TABLE objects_s (
+    id SERIAL,
+    d TIMESTAMP NOT NULL,
+    t TEXT NOT NULL,
+    p REAL NOT NULL,
+    s REAL NOT NULL,
+    PRIMARY KEY (id, s)
+) PARTITION BY RANGE (s);
