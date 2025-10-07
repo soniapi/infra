@@ -2,10 +2,16 @@ use diesel::prelude::*;
 use dotenvy::dotenv;
 use std::env;
 use chrono::NaiveDateTime;
+use std::error::Error;
 
 pub mod models;
 pub mod schema;
 pub mod helpers;
+
+pub enum ObjectType {
+    None(Object),
+    S(ObjectS),
+}
 
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
@@ -14,16 +20,31 @@ pub fn establish_connection() -> PgConnection {
     PgConnection::establish(&database_url).unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-use self::models::{NewObject, Object};
+use self::models::{NewObject, Object, NewObjectS, ObjectS};
 
-pub fn create_object(conn: &mut PgConnection, d: &NaiveDateTime, t: &String, p: &f32, s: &f32) -> Object {
-    use crate::schema::objects;
-
-    let new_object = NewObject { d, t, p, s };
-
-    diesel::insert_into(objects::table)
-        .values(&new_object)
-        .returning(Object::as_returning())
-        .get_result(conn)
-        .expect("Error saving new object")
+pub fn create_object(connection: &mut PgConnection, partition: Option<&str>, d: &NaiveDateTime, t: &String, p: &f32, s: &f32) -> Result<ObjectType, Box<dyn Error>> {
+    match partition {
+        None => {
+            println!("No partition");
+            use schema::objects;
+            let new_object = NewObject { d, t, p, s };
+            Ok(ObjectType::None(
+                diesel::insert_into(objects::table)
+                .values(&new_object)
+                .returning(Object::as_returning())
+                .get_result(connection)
+                .expect("Error saving new object")))
+        },
+        Some("s") => {
+            println!("Partition");
+            use schema::objects_s;
+            let new_object_s = NewObjectS { d, t, p, s };
+            Ok(ObjectType::S(diesel::insert_into(objects_s::table)
+                .values(&new_object_s)
+                .returning(ObjectS::as_returning())
+                .get_result(connection)
+                .expect("Error saving new object")))
+        },
+        _ => Err("Error".into()),
+    }
 }
