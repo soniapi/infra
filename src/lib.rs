@@ -22,7 +22,7 @@ pub fn establish_connection() -> PgConnection {
 
 use self::models::{NewObject, Object, NewObjectS, ObjectS};
 
-pub fn create_object(connection: &mut PgConnection, partition: Option<&str>, d: &NaiveDateTime, t: &String, p: &f32, s: &f32) -> Result<ObjectType, Box<dyn Error>> {
+pub fn create_object(connection: &mut PgConnection, partition: Option<&String>, d: &NaiveDateTime, t: &String, p: &f32, s: &f32) -> Result<ObjectType, Box<dyn Error>> {
     match partition {
         None => {
             println!("No partition");
@@ -35,15 +35,15 @@ pub fn create_object(connection: &mut PgConnection, partition: Option<&str>, d: 
                 .get_result(connection)
                 .expect("Error saving new object")))
         },
-        Some("s") => {
-            println!("Partition");
+        Some(value) if value == "s" => {
+            println!("Partition: {:?}", value);
             use schema::objects_s;
             let new_object_s = NewObjectS { d, t, p, s };
             Ok(ObjectType::S(diesel::insert_into(objects_s::table)
                 .values(&new_object_s)
                 .returning(ObjectS::as_returning())
                 .get_result(connection)
-                .expect("Error saving new object")))
+                .expect("Error saving new object_s in partioned table")))
         },
         _ => Err("Error".into()),
     }
