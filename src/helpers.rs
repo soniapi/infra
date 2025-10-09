@@ -2,6 +2,7 @@ use calamine::DataType;
 use std::any::type_name;
 use std::io::{self, Write, BufRead};
 use std::error::Error;
+use std::str::FromStr;
 use std::fmt;
 
 pub fn convert(data: &DataType) -> Option<f32> {
@@ -34,7 +35,7 @@ fn inputs_option() -> Option<String> {
     }
 }
 
-pub fn inputs() -> (String, String, Option<String>) {
+pub fn inputs() -> (String, String, Option<String>, Option<i32>) {
     let mut stdout = io::stdout();
     let stdin = io::stdin();
 
@@ -57,9 +58,13 @@ pub fn inputs() -> (String, String, Option<String>) {
     let trimmed_p: Option<String> = inputs_option();
     println!("Your input {:?}", trimmed_p);
 
-    (trimmed_f, trimmed_t, trimmed_p)
-}
+    stdout.flush().expect("Failed to flush stdout");
+    println!("Enter how many rows to deserialize (all rows press enter):");
+    let trimmed_r: Option<i32> = inputs_option().and_then(|trimmed_r| trimmed_r.parse::<i32>().ok());
+    println!("Your input {:?}", trimmed_r);
 
+    (trimmed_f, trimmed_t, trimmed_p, trimmed_r)
+}
 
 pub fn errors() -> Result<(), Box<dyn Error>> {
     let message = "Error";
