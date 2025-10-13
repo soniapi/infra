@@ -2,7 +2,6 @@ use calamine::DataType;
 use std::any::type_name;
 use std::io::{self, Write, BufRead};
 use std::error::Error;
-use std::str::FromStr;
 use std::fmt;
 
 pub fn convert(data: &DataType) -> Option<f32> {
@@ -16,7 +15,7 @@ pub fn print_type<T>(_: &T) {
     println!("Type is: {}", type_name::<T>());
 }
 
-fn inputs_option() -> Option<String> {
+pub fn inputs_option() -> Option<String> {
     let stdin = io::stdin();
     let mut o = String::new();
 
