@@ -24,12 +24,12 @@ pub fn establish_connection() -> PgConnection {
 
 use self::models::{NewObject, Object, NewObjectS, ObjectS};
 
-pub fn create_object(connection: &mut PgConnection, partition: Option<&String>, d: &NaiveDateTime, t: &String, p: &f32, s: &f32) -> Result<ObjectType, Box<dyn Error>> {
+pub fn create_object(connection: &mut PgConnection, partition: Option<&String>, d: &NaiveDateTime, t: &String, p: &f32, s: &f32, c: &f32) -> Result<ObjectType, Box<dyn Error>> {
     match partition {
         None => {
             println!("No partition");
             use crate::schema::objects;
-            let new_object = NewObject { d, t, p, s };
+            let new_object = NewObject { d, t, p, s, c };
             Ok(ObjectType::None(
                 diesel::insert_into(objects::table)
                 .values(&new_object)
@@ -40,7 +40,7 @@ pub fn create_object(connection: &mut PgConnection, partition: Option<&String>, 
         Some(value) if value == "s" => {
             println!("Partition: {:?}", value);
             use crate::schema::objects_s;
-            let new_object_s = NewObjectS { d, t, p, s };
+            let new_object_s = NewObjectS { d, t, p, s, c };
             Ok(ObjectType::S(diesel::insert_into(objects_s::table)
                 .values(&new_object_s)
                 .returning(ObjectS::as_returning())
@@ -62,7 +62,7 @@ pub fn fill_partitions() {
                 for row in range.rows().skip(1).take(limit as usize) {
                     println!("Check you PostgreSQL table for below object insertion");
                     println!("row[0]={:?}, row[1]={:?}, row[2]={:?}, row[3]={:?}", row[0].as_datetime(), row[1].as_string(), &helpers::convert(&row[2]).as_ref().unwrap(), &helpers::convert(&row[3]).as_ref().unwrap());
-                    let _ = create_object(connection,  p.as_ref(), row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), convert(&row[2]).as_ref().unwrap(), convert(&row[3]).as_ref().unwrap());
+                    let _ = create_object(connection,  p.as_ref(), row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), convert(&row[2]).as_ref().unwrap(), convert(&row[3]).as_ref().unwrap(), &0.0);
                  }
             }
             else {
@@ -74,7 +74,7 @@ pub fn fill_partitions() {
                 for row in range.rows().skip(1) {
                     println!("Check you PostgreSQL table for below object insertion");
                     println!("row[0]={:?}, row[1]={:?}, row[2]={:?}, row[3]={:?}", row[0].as_datetime(), row[1].as_string(), &helpers::convert(&row[2]).as_ref().unwrap(), &helpers::convert(&row[3]).as_ref().unwrap());
-                    let _ = create_object(connection,  p.as_ref(), row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), convert(&row[2]).as_ref().unwrap(), convert(&row[3]).as_ref().unwrap());
+                    let _ = create_object(connection,  p.as_ref(), row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), convert(&row[2]).as_ref().unwrap(), convert(&row[3]).as_ref().unwrap(), &0.0);
                  }
             }
             else {
