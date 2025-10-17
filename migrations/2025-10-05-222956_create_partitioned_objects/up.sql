@@ -4,5 +4,8 @@ CREATE TABLE objects_s (
     t TEXT NOT NULL,
     p REAL NOT NULL,
     s REAL NOT NULL,
+    c REAL NOT NULL,
     PRIMARY KEY (id, s)
 ) PARTITION BY RANGE (s);
+
+
