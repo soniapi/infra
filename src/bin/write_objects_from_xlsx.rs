@@ -14,7 +14,7 @@ fn main() {
         for row in range.rows().skip(1).take(r.unwrap() as usize) {
             println!("Check you PostgreSQL table for below object insertion");
             println!("row[0]={:?}, row[1]={:?}, row[2]={:?}, row[3]={:?}", row[0].as_datetime(), row[1].as_string(), &helpers::convert(&row[2]).as_ref().unwrap(), &helpers::convert(&row[3]).as_ref().unwrap());
-            let _ = create_object(connection,  p.as_ref(), row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), helpers::convert(&row[2]).as_ref().unwrap(), helpers::convert(&row[3]).as_ref().unwrap());
+            let _ = create_object(connection,  p.as_ref(), row[0].as_datetime().as_ref().unwrap(), row[1].as_string().as_ref().unwrap(), helpers::convert(&row[2]).as_ref().unwrap(), helpers::convert(&row[3]).as_ref().unwrap(), &0.0);
         }
     }
     else {
