@@ -3,5 +3,6 @@ CREATE TABLE objects (
     d TIMESTAMP NOT NULL,
     t TEXT NOT NULL,
     p REAL NOT NULL,
-    s REAL NOT NULL
+    s REAL NOT NULL,
+    c REAL NOT NULL
 )
