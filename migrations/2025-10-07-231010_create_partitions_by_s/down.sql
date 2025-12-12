@@ -1,2 +1,2 @@
-DROP TABLE objects_s_100k_above;
-DROP TABLE objects_s_100k_below;
+DROP TABLE objects_s_100000_above;
+DROP TABLE objects_s_100000_below;

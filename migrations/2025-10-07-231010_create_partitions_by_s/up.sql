@@ -1,5 +1,5 @@
-CREATE TABLE objects_s_100k_above PARTITION OF objects_s
+CREATE TABLE objects_s_100000_above PARTITION OF objects_s
     FOR VALUES FROM (100000.00) TO (MAXVALUE);
 
-CREATE TABLE objects_s_100k_below PARTITION OF objects_s
+CREATE TABLE objects_s_100000_below PARTITION OF objects_s
     FOR VALUES FROM (MINVALUE) TO (99999.00);
